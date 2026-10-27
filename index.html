@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>StatistikaKu</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+<header class="topbar"><div class="nav"><a class="brand" href="/">▥ Statistika<span>Ku</span></a><span class="tagline">Teman belajar statistikmu</span></div></header>
+<main class="page">
+<section class="hero">
+  <div class="hero-copy">
+    <span class="eyebrow">KALKULATOR STATISTIK</span>
+    <h1>Angka jadi lebih<br><span>mudah dipahami.</span></h1>
+    <p>Masukkan data dan lihat ringkasan statistiknya secara otomatis.</p>
+    <div class="pills"><span>✓ Cepat</span><span>✓ Praktis</span><span>✓ Otomatis</span></div>
+  </div>
+  <div class="art" aria-hidden="true"><div class="art-card"><b>Ringkasan data</b><div class="bars"><i></i><i></i><i></i><i></i><i></i><i></i></div><small>Data • Analisis • Hasil</small></div><div class="bubble">📈 Data teranalisis!</div></div>
+</section>
+<section class="section">
+  <div class="heading"><div><span class="eyebrow blue">MULAI DI SINI</span><h2>Masukkan datamu</h2></div><span class="step">01 / INPUT</span></div>
+  <form method="POST" class="input-card">
+    <label for="data">Data angka</label>
+    <textarea id="data" name="data" placeholder="Contoh: 70, 80, 85, 90, 75, 80" required>{{ teks_data }}</textarea>
+    <div class="form-bottom"><small>Pisahkan angka dengan koma atau spasi.</small><button type="submit">Hitung statistik <b>→</b></button></div>
+  </form>
+  {% if error %}<div class="error">⚠ {{ error }}</div>{% endif %}
+  {% if hasil %}
+  <div class="heading results-heading"><div><span class="eyebrow blue">HASIL ANALISIS</span><h2>Ringkasan datamu</h2></div><span class="step">02 / HASIL</span></div>
+  <div class="metrics">
+    <article class="metric main-metric"><div class="metric-label">Mean <span>μ</span></div><strong>{{ hasil.mean }}</strong><small>Rata-rata data</small></article>
+    <article class="metric"><div class="metric-label">Median <span>↔</span></div><strong>{{ hasil.median }}</strong><small>Nilai tengah</small></article>
+    <article class="metric"><div class="metric-label">Modus <span>◎</span></div><strong class="long">{{ hasil.modus }}</strong><small>Nilai paling sering muncul</small></article>
+    <article class="metric"><div class="metric-label">Jumlah data <span>#</span></div><strong>{{ hasil.jumlah }}</strong><small>Banyaknya angka</small></article>
+  </div>
+  <div class="details">
+    <article class="panel"><span class="eyebrow blue">SEBARAN DATA</span><h3>Detail nilai</h3>
+      <div class="row"><span>Nilai tertinggi</span><b>{{ hasil.maksimum }}</b></div>
+      <div class="row"><span>Nilai terendah</span><b>{{ hasil.minimum }}</b></div>
+      <div class="row"><span>Jangkauan</span><b>{{ hasil.jangkauan }}</b></div>
+    </article>
+    <article class="panel"><span class="eyebrow blue">VISUALISASI</span><h3>Frekuensi angka</h3><canvas id="chart"></canvas></article>
+  </div>
+  <article class="panel formula"><span class="eyebrow blue">BELAJAR JUGA</span><h3>Rumus yang digunakan</h3><div class="formula-grid">
+    <div><b>Mean</b><p>Jumlah seluruh data dibagi banyaknya data.</p></div>
+    <div><b>Median</b><p>Nilai tengah setelah data diurutkan.</p></div>
+    <div><b>Modus</b><p>Nilai yang paling sering muncul.</p></div>
+  </div></article>
+  <script>
+  new Chart(document.getElementById('chart'), {
+    type:'bar',
+    data:{labels:{{ hasil.label|tojson }},datasets:[{data:{{ hasil.frekuensi|tojson }},backgroundColor:'#7188f5',hoverBackgroundColor:'#3155d9',borderRadius:7,maxBarThickness:42}]},
+    options:{responsive:true,plugins:{legend:{display:false}},scales:{x:{grid:{display:false}},y:{beginAtZero:true,ticks:{precision:0}}}}
+  });
+  </script>
+  {% else %}
+  <div class="empty"><div class="empty-icon">✳</div><h3>Hasil statistik akan tampil di sini</h3><p>Masukkan data angka di atas, lalu tekan tombol hitung untuk melihat hasil analisis.</p></div>
+  {% endif %}
+</section>
+<footer><a class="brand" href="/">▥ Statistika<span>Ku</span></a><p>Projek UAS ALPRO · Belajar matematika lebih mudah.</p></footer>
+</main>
+</body>
+</html>
